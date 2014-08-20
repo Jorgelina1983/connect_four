@@ -1,0 +1,88 @@
+<h1>First User</h1>
+<p>Yellow dots</p>
+
+
+<script type="text/javascript">
+
+	//var data = [[["0", 0], ["1", 0], ["2", 0], ["3", 0], ["4", 0], ["5", 0], ["6", 0]], [["7",0], ["8", 0], ["9", 0], ["10", 0], ["11", 0], ["12", 0], ["13", 0]], [["14", 0], ["15", 0], ["16", 0], ["17", 0], ["18", 0], ["19", 0], ["20", 0]], [["21", 0], ["22", 0], ["23", 0], ["24", 0], ["25", 0], ["26", 0], ["27", 0]], [["28", 0], ["29",0], ["30", 0], ["31", 0], ["32", 0], ["33", 0], ["34", 0]], [["35", 0], ["36", 0], ["37", 0], ["38", 0], ["39", 0], ["40", 0], ["41", 0]], [["42", 0], ["43", 0], ["44", 0], ["45", 0], ["46", 0], ["47", 0], ["48", 0]]];
+	jQuery(function(){
+		var data = <%= @board %>;
+		//alert(data1.split(","));
+		//data = data1.split(",");
+		//$("td#col1").click(function(){alert('col 1');});
+
+		draw_board(data);
+
+		$("#col1").on("click", function() {
+			play( "1", "1" );
+		});
+		$("#col2").on("click", function() {
+			play( "2", "1" );
+		});
+		$("#col3").on("click", function() {
+			play( "3", "1" );
+		});
+		$("#col4").on("click", function() {
+			play( "4", "1" );
+		});
+		$("#col5").on("click", function() {
+			play( "5", "1" );
+		});
+		$("#col6").on("click", function() {
+			play( "6", "1" );
+		});
+		$("#col7").on("click", function() {
+			play( "7", "1" );
+		});
+	});	
+
+	function draw_board(data)
+	{		
+		var html = '<table><thead><tr><td id="col1" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col2" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col3" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col4" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col5" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col6" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td><td id="col7" style="background-color:lime;width:25px;height:25px;text-align:center;"> + </td></tr></thead><tbody>';
+		var count = 0;
+		for (var i = 0, len = 7; i < len; ++i) {
+		    html += '<tr>';
+		    for (var j = 0, rowLen = 7; j < rowLen; ++j ) {
+		    	color = get_bg_color(data[i][j][1]);
+		    	
+		        html += '<td style="' + color + '"></td>';
+		        ++count;
+		    }
+		    html += "</tr>";
+		}
+		html += '</tbody></table>';
+
+		$(html).appendTo('#board_div');
+	}
+
+	function get_bg_color(data)
+	{		
+		if (data == 1)
+		{
+			return 'background-color:yellow;width:25px;height:25px;'
+		}
+
+		if (data == 2)
+		{
+			return 'background-color:red;width:35px;height:35px;'
+		}
+
+		return 'background-color:black;width:35px;height:35px;'
+	}
+
+	function play(column, color)
+	{
+		$.ajax({url: ('/users/play'),                  
+			data: "column="+ column +" &color=" + color + "&board= " + <%= @board.to_json %>,
+			type: 'PUT',
+			async: true,
+			success: function(data){
+				$("#board_div").empty();
+				draw_board(data);
+			}                         
+		});
+	}
+</script>
+
+<div id='board_div'> 
+</div>
